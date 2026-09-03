@@ -1,0 +1,18 @@
+{
+  "name": "@puzzle-game-core/tower-of-hanoi",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@puzzle-game-core/game-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/bun": "1.4.0"
+  },
+  "scripts": {
+    "typecheck": "tsc -p tsconfig.json"
+  }
+}
