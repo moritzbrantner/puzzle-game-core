@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@puzzle-game-core/game-core": "workspace:*",
+    "@puzzle-game-core/lights-out": "workspace:*",
     "@puzzle-game-core/sudoku": "workspace:*",
+    "@puzzle-game-core/tower-of-hanoi": "workspace:*",
     "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8"
