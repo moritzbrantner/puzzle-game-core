@@ -2,13 +2,19 @@
 
 Reusable foundations and implementations for small deterministic logic games.
 
-The repository starts vertically: a tiny headless game contract, one Sudoku domain package, and a playable Next.js web application. More abstractions should only be added after another game proves they are shared.
+The repository grows vertically: each game keeps its rules in a headless package and gets a playable web slice before shared abstractions are expanded. Common code is added only after multiple games demonstrate the same need.
 
-## A0
+## Playable games
 
-- `packages/game-core`: minimal generic game contract
-- `packages/sudoku`: Sudoku puzzle/state/move rules and fixtures
-- `apps/web`: playable Sudoku UI with keyboard/touch input, undo, restart, conflict highlighting, completion detection, and local persistence
+- `packages/sudoku`: Sudoku puzzle/state/move rules, validation, fixtures, and browser persistence in the web shell
+- `packages/lights-out`: deterministic Lights Out rules plus a reproducible 5×5 fixture with a known solution
+- `packages/tower-of-hanoi`: legal Tower of Hanoi moves, state validation, and minimum-move calculation
+- `apps/web`: a small gallery hosting all three games with focused browser interactions, undo, and restart
+- `packages/game-core`: the intentionally minimal generic game contract shared by the domain packages
+
+## Architecture
+
+Puzzle rules are deterministic and testable without React. Rendering, browser input, navigation, and other platform concerns remain in the web app. There is still no backend, Rust/WASM layer, Expo app, Tauri shell, generalized solver framework, account system, or achievement layer.
 
 ## Development
 
@@ -26,5 +32,3 @@ bun test
 bun run typecheck
 bun run build
 ```
-
-A0 intentionally has no backend, Rust/WASM layer, Expo app, Tauri shell, or generalized solver framework. Those boundaries should be introduced only when a later vertical slice needs them.
