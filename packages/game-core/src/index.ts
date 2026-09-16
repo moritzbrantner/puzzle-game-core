@@ -6,6 +6,10 @@ export type GameStatus = "playing" | "solved" | "invalid";
  * Persistence, undo history, rendering, solving, generation and hints are not
  * part of this contract until multiple games prove that they need the same
  * abstraction.
+ *
+ * `applyMove` must return the input state object unchanged when a move is
+ * rejected or produces no observable state change. Generic session/history
+ * code relies on that identity convention without duplicating game legality.
  */
 export type GameDefinition<Puzzle, State, Move> = Readonly<{
   id: string;
