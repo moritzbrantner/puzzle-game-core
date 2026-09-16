@@ -1,5 +1,6 @@
 import { FifteenPuzzleGame } from "../components/FifteenPuzzleGame";
 import { LightsOutGame } from "../components/LightsOutGame";
+import { NonogramGame } from "../components/NonogramGame";
 import { SudokuGame } from "../components/SudokuGame";
 import { TowerOfHanoiGame } from "../components/TowerOfHanoiGame";
 
@@ -8,6 +9,7 @@ const games = [
   { id: "lights-out", name: "Lights Out", description: "Toggle neighboring lights until the whole board is dark." },
   { id: "tower-of-hanoi", name: "Tower of Hanoi", description: "Move a stack while never placing a larger disk on a smaller one." },
   { id: "fifteen-puzzle", name: "Fifteen Puzzle", description: "Slide numbered tiles through one empty space until the board is ordered." },
+  { id: "nonogram", name: "Nonogram", description: "Use row and column run clues to reveal a hidden pixel picture." },
 ] as const;
 
 export default function HomePage() {
@@ -18,11 +20,11 @@ export default function HomePage() {
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">Deterministic logic games</p>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Puzzle game core</h1>
           <p className="max-w-3xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-            Four playable vertical slices exercise the same small headless contracts while keeping each puzzle&apos;s rules and invariants in its own package.
+            Five playable vertical slices exercise the same small headless contracts while keeping each puzzle&apos;s rules and invariants in its own package.
           </p>
         </div>
 
-        <nav className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Games">
+        <nav className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5" aria-label="Games">
           {games.map((game) => (
             <a
               key={game.id}
@@ -66,6 +68,14 @@ export default function HomePage() {
           <h2 className="mt-1 text-2xl font-semibold tracking-tight">Fifteen Puzzle</h2>
         </div>
         <FifteenPuzzleGame />
+      </section>
+
+      <section id="nonogram" className="scroll-mt-8 space-y-5 border-t border-zinc-200 pt-10 dark:border-zinc-800">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Deduction puzzle</p>
+          <h2 className="mt-1 text-2xl font-semibold tracking-tight">Nonogram</h2>
+        </div>
+        <NonogramGame />
       </section>
     </main>
   );
