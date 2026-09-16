@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@puzzle-game-core/game-core": "workspace:*",
+    "@puzzle-game-core/game-session": "workspace:*",
     "@puzzle-game-core/lights-out": "workspace:*",
     "@puzzle-game-core/sudoku": "workspace:*",
     "@puzzle-game-core/tower-of-hanoi": "workspace:*",
