@@ -1,43 +1,34 @@
 "use client";
 
-import { useState } from "react";
 import {
-  beginnerLightsOut,
-  createInitialLightsOutState,
-  lightsOutGame,
-  type LightsOutState,
-} from "@puzzle-game-core/lights-out";
+  applyGameSessionMove,
+  canUndoGameSession,
+  restartGameSession,
+  startGameSession,
+  undoGameSession,
+} from "@puzzle-game-core/game-session";
+import { beginnerLightsOut, lightsOutGame } from "@puzzle-game-core/lights-out";
+import { useState } from "react";
 
 export function LightsOutGame() {
-  const [state, setState] = useState<LightsOutState>(() => createInitialLightsOutState(beginnerLightsOut));
-  const [history, setHistory] = useState<LightsOutState[]>([]);
+  const [session, setSession] = useState(() => startGameSession(lightsOutGame, beginnerLightsOut));
+  const state = session.state;
 
   const status = lightsOutGame.getStatus(beginnerLightsOut, state);
   const litCount = state.cells.filter(Boolean).length;
 
   function press(index: number) {
-    const next = lightsOutGame.applyMove(beginnerLightsOut, state, { type: "toggle", index });
-    if (next === state) {
-      return;
-    }
-
-    setHistory((current) => [...current.slice(-99), state]);
-    setState(next);
+    setSession((current) =>
+      applyGameSessionMove(lightsOutGame, beginnerLightsOut, current, { type: "toggle", index }),
+    );
   }
 
   function undo() {
-    const previous = history.at(-1);
-    if (!previous) {
-      return;
-    }
-
-    setHistory((current) => current.slice(0, -1));
-    setState(previous);
+    setSession((current) => undoGameSession(current));
   }
 
   function restart() {
-    setState(createInitialLightsOutState(beginnerLightsOut));
-    setHistory([]);
+    setSession(restartGameSession(lightsOutGame, beginnerLightsOut));
   }
 
   return (
@@ -87,13 +78,13 @@ export function LightsOutGame() {
         </div>
 
         <div className="text-sm text-zinc-600 dark:text-zinc-400">
-          <span className="font-semibold text-zinc-900 dark:text-zinc-100">Moves:</span> {history.length}
+          <span className="font-semibold text-zinc-900 dark:text-zinc-100">Moves:</span> {session.moveCount}
         </div>
 
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            disabled={history.length === 0}
+            disabled={!canUndoGameSession(session)}
             className="min-h-11 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
             onClick={undo}
           >
