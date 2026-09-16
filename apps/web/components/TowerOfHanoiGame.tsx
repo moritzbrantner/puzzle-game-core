@@ -1,18 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import {
+  applyGameSessionMove,
+  canUndoGameSession,
+  restartGameSession,
+  startGameSession,
+  undoGameSession,
+} from "@puzzle-game-core/game-session";
 import {
   beginnerHanoi,
-  createInitialHanoiState,
   getMinimumHanoiMoveCount,
   towerOfHanoiGame,
-  type HanoiState,
 } from "@puzzle-game-core/tower-of-hanoi";
+import { useState } from "react";
 
 export function TowerOfHanoiGame() {
-  const [state, setState] = useState<HanoiState>(() => createInitialHanoiState(beginnerHanoi));
-  const [history, setHistory] = useState<HanoiState[]>([]);
+  const [session, setSession] = useState(() => startGameSession(towerOfHanoiGame, beginnerHanoi));
   const [selectedPeg, setSelectedPeg] = useState<number | null>(null);
+  const state = session.state;
 
   const status = towerOfHanoiGame.getStatus(beginnerHanoi, state);
   const minimumMoves = getMinimumHanoiMoveCount(beginnerHanoi);
@@ -30,33 +35,25 @@ export function TowerOfHanoiGame() {
       return;
     }
 
-    const next = towerOfHanoiGame.applyMove(beginnerHanoi, state, {
+    const next = applyGameSessionMove(towerOfHanoiGame, beginnerHanoi, session, {
       type: "move",
       from: selectedPeg,
       to: pegIndex,
     });
 
-    if (next !== state) {
-      setHistory((current) => [...current.slice(-99), state]);
-      setState(next);
+    if (next !== session) {
+      setSession(next);
       setSelectedPeg(null);
     }
   }
 
   function undo() {
-    const previous = history.at(-1);
-    if (!previous) {
-      return;
-    }
-
-    setHistory((current) => current.slice(0, -1));
-    setState(previous);
+    setSession((current) => undoGameSession(current));
     setSelectedPeg(null);
   }
 
   function restart() {
-    setState(createInitialHanoiState(beginnerHanoi));
-    setHistory([]);
+    setSession(restartGameSession(towerOfHanoiGame, beginnerHanoi));
     setSelectedPeg(null);
   }
 
@@ -116,7 +113,7 @@ export function TowerOfHanoiGame() {
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div className="rounded-lg bg-zinc-100 p-3 dark:bg-zinc-900">
             <p className="text-zinc-500">Moves</p>
-            <p className="mt-1 font-semibold">{history.length}</p>
+            <p className="mt-1 font-semibold">{session.moveCount}</p>
           </div>
           <div className="rounded-lg bg-zinc-100 p-3 dark:bg-zinc-900">
             <p className="text-zinc-500">Minimum</p>
@@ -127,7 +124,7 @@ export function TowerOfHanoiGame() {
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            disabled={history.length === 0}
+            disabled={!canUndoGameSession(session)}
             className="min-h-11 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
             onClick={undo}
           >
