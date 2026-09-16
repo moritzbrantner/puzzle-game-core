@@ -134,8 +134,10 @@ export function isValidMastermindState(
     return false;
   }
 
-  return state.guesses.every((guess) => {
-    if (!guess || !Array.isArray(guess.code) || !hasValidCode(puzzle, guess.code)) {
+  let solved = false;
+
+  for (const guess of state.guesses) {
+    if (solved || !guess || !Array.isArray(guess.code) || !hasValidCode(puzzle, guess.code)) {
       return false;
     }
 
@@ -151,8 +153,14 @@ export function isValidMastermindState(
     }
 
     const authoritative = scoreMastermindGuess(puzzle, guess.code);
-    return authoritative !== null && feedbackMatches(guess.feedback, authoritative);
-  });
+    if (authoritative === null || !feedbackMatches(guess.feedback, authoritative)) {
+      return false;
+    }
+
+    solved = authoritative.exact === puzzle.slots;
+  }
+
+  return true;
 }
 
 function hasSolvedGuess(puzzle: MastermindPuzzle, state: MastermindState): boolean {
