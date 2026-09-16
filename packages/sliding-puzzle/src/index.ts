@@ -122,7 +122,7 @@ export function isValidSlidingPuzzleState(
   puzzle: SlidingPuzzle,
   state: SlidingPuzzleState,
 ): boolean {
-  return hasCanonicalTileSet(puzzle.width, puzzle.height, state.tiles);
+  return isSolvableSlidingPuzzleLayout(puzzle.width, puzzle.height, state.tiles);
 }
 
 function areAdjacent(width: number, leftIndex: number, rightIndex: number): boolean {
