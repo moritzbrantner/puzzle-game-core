@@ -1,17 +1,23 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import {
+  applyGameSessionMove,
+  canUndoGameSession,
+  createGameSessionFromState,
+  restartGameSession,
+  startGameSession,
+  undoGameSession,
+} from "@puzzle-game-core/game-session";
 import {
   beginnerSudoku,
-  createInitialSudokuState,
   getConflictingCells,
   isGivenCell,
   restoreSudokuState,
   sudokuGame,
   type SudokuCell,
   type SudokuDigit,
-  type SudokuState,
 } from "@puzzle-game-core/sudoku";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 
 const STORAGE_KEY = "puzzle-game-core:sudoku:classic-easy-1:v1";
 const DIGITS: SudokuDigit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -21,12 +27,12 @@ function cellCoordinates(index: number): { row: number; column: number } {
 }
 
 export function SudokuGame() {
-  const [state, setState] = useState<SudokuState>(() => createInitialSudokuState(beginnerSudoku));
-  const [history, setHistory] = useState<SudokuState[]>([]);
+  const [session, setSession] = useState(() => startGameSession(sudokuGame, beginnerSudoku));
   const [selectedIndex, setSelectedIndex] = useState<number>(2);
   const [persistenceReady, setPersistenceReady] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
 
+  const state = session.state;
   const status = sudokuGame.getStatus(beginnerSudoku, state);
   const conflicts = useMemo(() => getConflictingCells(state), [state]);
 
@@ -37,7 +43,7 @@ export function SudokuGame() {
         const parsed = JSON.parse(raw) as { cells?: unknown };
         const restored = restoreSudokuState(beginnerSudoku, parsed.cells);
         if (restored) {
-          setState(restored);
+          setSession(createGameSessionFromState(restored));
         }
       }
     } catch {
@@ -56,33 +62,21 @@ export function SudokuGame() {
   }, [persistenceReady, state]);
 
   function commit(value: SudokuCell) {
-    const next = sudokuGame.applyMove(beginnerSudoku, state, {
-      type: "set-cell",
-      index: selectedIndex,
-      value,
-    });
-
-    if (next === state) {
-      return;
-    }
-
-    setHistory((current) => [...current.slice(-99), state]);
-    setState(next);
+    setSession((current) =>
+      applyGameSessionMove(sudokuGame, beginnerSudoku, current, {
+        type: "set-cell",
+        index: selectedIndex,
+        value,
+      }),
+    );
   }
 
   function undo() {
-    const previous = history.at(-1);
-    if (!previous) {
-      return;
-    }
-
-    setHistory((current) => current.slice(0, -1));
-    setState(previous);
+    setSession((current) => undoGameSession(current));
   }
 
   function restart() {
-    setState(createInitialSudokuState(beginnerSudoku));
-    setHistory([]);
+    setSession(restartGameSession(sudokuGame, beginnerSudoku));
     setSelectedIndex(2);
     boardRef.current?.focus();
   }
@@ -211,7 +205,7 @@ export function SudokuGame() {
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            disabled={history.length === 0}
+            disabled={!canUndoGameSession(session)}
             className="min-h-11 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
             onClick={undo}
           >
