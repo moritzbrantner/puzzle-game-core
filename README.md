@@ -11,7 +11,8 @@ The repository grows vertically: each game keeps its rules in a headless package
 - `packages/tower-of-hanoi`: legal Tower of Hanoi moves, state validation, and minimum-move calculation
 - `packages/sliding-puzzle`: canonical-goal sliding-puzzle rules, permutation validation, parity-based reachability, legal adjacent slides, and a reproducible 4×4 Fifteen Puzzle fixture
 - `packages/nonogram`: clue derivation, tri-state player marks, structural validation, and deterministic completion semantics over a reproducible 5×5 picture fixture
-- `apps/web`: a small gallery hosting all five games with focused browser interactions
+- `packages/mastermind`: hidden-code ownership, duplicate-aware exact/color-only feedback, validated guess history, and deterministic solved-state semantics
+- `apps/web`: a small gallery hosting all six games with focused browser interactions
 
 ## Shared foundations
 
@@ -22,7 +23,7 @@ The repository grows vertically: each game keeps its rules in a headless package
 
 Puzzle rules are deterministic and testable without React. Game packages remain authoritative for legal moves, validation, and status. `game-session` only records accepted state transitions; rejected/no-op moves preserve state identity. Browser persistence validates through the owning game package before restored state enters a fresh session. Rendering, browser input, navigation, persistence transport, and other platform concerns remain in the web app.
 
-The Fifteen Puzzle keeps permutation and parity/reachability checks inside `sliding-puzzle`; the React UI consumes only domain state and the domain-owned movable-tile query. Nonogram keeps clue derivation and completion truth inside `nonogram`; incorrect but structurally valid guesses remain ordinary playable state rather than being mislabeled as invalid data.
+The Fifteen Puzzle keeps permutation and parity/reachability checks inside `sliding-puzzle`; the React UI consumes only domain state and the domain-owned movable-tile query. Nonogram keeps clue derivation and completion truth inside `nonogram`; incorrect but structurally valid guesses remain ordinary playable state rather than being mislabeled as invalid data. Mastermind keeps its code out of the public puzzle object, owns duplicate-aware scoring and stored-feedback validation, and exposes only the feedback needed by the web UI. Because the game is fully offline/client-side, that encapsulation is an architectural boundary rather than a security guarantee against a user inspecting the shipped JavaScript.
 
 There is still no backend, Rust/WASM layer, Expo app, Tauri shell, generalized solver/generator framework, account system, or achievement layer.
 
