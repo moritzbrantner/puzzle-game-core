@@ -101,6 +101,24 @@ describe("Mastermind rules", () => {
     expect(getMastermindStatus(beginnerMastermind, tampered)).toBe("invalid");
   });
 
+  test("stored history cannot continue after the solved guess", () => {
+    const impossible: MastermindState = {
+      guesses: [
+        {
+          code: ["red", "yellow", "blue", "green"],
+          feedback: { exact: 4, colorOnly: 0 },
+        },
+        {
+          code: ["blue", "blue", "blue", "blue"],
+          feedback: { exact: 1, colorOnly: 0 },
+        },
+      ],
+    };
+
+    expect(isValidMastermindState(beginnerMastermind, impossible)).toBe(false);
+    expect(getMastermindStatus(beginnerMastermind, impossible)).toBe("invalid");
+  });
+
   test("the public puzzle contract does not expose the secret code", () => {
     expect("secret" in beginnerMastermind).toBe(false);
     expect(beginnerMastermind).toEqual({
