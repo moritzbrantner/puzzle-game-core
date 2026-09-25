@@ -14,6 +14,8 @@ This repository is a reusable foundation for small deterministic logic games and
 - Sliding-puzzle permutation integrity, solvability parity, adjacency, and movable-tile queries belong in `packages/sliding-puzzle`, not in React.
 - Nonogram clue derivation, mark validation, and completion truth belong in `packages/nonogram`; incorrect guesses are valid player state and must not be treated as malformed state.
 - Mastermind secret ownership, duplicate-aware feedback, guess-history validation, and solved-state truth belong in `packages/mastermind`; React may render domain feedback but must not read or reproduce the secret/scoring rules. Client-side concealment is not a security boundary.
+- Sokoban movement, crate pushing, board/state validation, and completion truth belong in `packages/sokoban`; React only renders the board and translates input into domain moves.
+- Peg Solitaire jump geometry, legal-move discovery, state validation, and center-goal completion truth belong in `packages/peg-solitaire`; selection/highlighting remains UI state.
 - External/restored state must be validated by the owning game package before it is adopted by a fresh game session.
 - Platform concerns such as browser persistence, navigation, input adaptation, animation, and rendering stay in application/UI layers until there is evidence they should be shared.
 - React integration for generic session actions belongs in the web application (currently `apps/web/hooks/useGameSession.ts`), never in `packages/game-session`. A component may call the pure session functions directly when it needs transition identity to coordinate UI state.
@@ -24,4 +26,4 @@ This repository is a reusable foundation for small deterministic logic games and
 
 ## Current scope
 
-The web gallery currently proves Sudoku, Lights Out, Tower of Hanoi, the Fifteen Puzzle, Nonogram, and Mastermind against the shared headless contracts. Do not add Expo, Tauri, accounts, a backend, a generalized solver/generator framework, achievements, or cross-platform rendering abstractions without a concrete later slice that needs them.
+The web gallery currently proves Sudoku, Lights Out, Tower of Hanoi, the Fifteen Puzzle, Nonogram, Mastermind, Sokoban, and Peg Solitaire against the shared headless contracts. Do not add Expo, Tauri, accounts, a backend, a generalized solver/generator framework, achievements, or cross-platform rendering abstractions without a concrete later slice that needs them.
