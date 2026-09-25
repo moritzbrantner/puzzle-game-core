@@ -12,7 +12,9 @@ The repository grows vertically: each game keeps its rules in a headless package
 - `packages/sliding-puzzle`: canonical-goal sliding-puzzle rules, permutation validation, parity-based reachability, legal adjacent slides, and a reproducible 4×4 Fifteen Puzzle fixture
 - `packages/nonogram`: clue derivation, tri-state player marks, structural validation, and deterministic completion semantics over a reproducible 5×5 picture fixture
 - `packages/mastermind`: hidden-code ownership, duplicate-aware exact/color-only feedback, validated guess history, and deterministic solved-state semantics
-- `apps/web`: a small gallery hosting all six games with focused browser interactions
+- `packages/sokoban`: deterministic warehouse movement, crate-push legality, state validation, and a reproducible two-crate fixture
+- `packages/peg-solitaire`: classic English-board jump legality, legal-move discovery, state validation, and center-goal completion semantics
+- `apps/web`: a small gallery hosting all eight games with focused browser interactions
 
 ## Shared foundations
 
@@ -25,7 +27,7 @@ Puzzle rules are deterministic and testable without React. Game packages remain 
 
 The dependency direction is deliberately one-way: `game-core` is the minimal base; domain game packages and `game-session` depend on it; domain games do not depend on `game-session`; and `apps/web` composes the headless packages. React session wiring stays in `apps/web/hooks/useGameSession.ts` instead of leaking into the reusable packages. A lightweight architecture test guards those boundaries as new games are added.
 
-The Fifteen Puzzle keeps permutation and parity/reachability checks inside `sliding-puzzle`; the React UI consumes only domain state and the domain-owned movable-tile query. Nonogram keeps clue derivation and completion truth inside `nonogram`; incorrect but structurally valid guesses remain ordinary playable state rather than being mislabeled as invalid data. Mastermind keeps its code out of the public puzzle object, owns duplicate-aware scoring and stored-feedback validation, and exposes only the feedback needed by the web UI. Because the game is fully offline/client-side, that encapsulation is an architectural boundary rather than a security guarantee against a user inspecting the shipped JavaScript.
+The Fifteen Puzzle keeps permutation and parity/reachability checks inside `sliding-puzzle`; the React UI consumes only domain state and the domain-owned movable-tile query. Nonogram keeps clue derivation and completion truth inside `nonogram`; incorrect but structurally valid guesses remain ordinary playable state rather than being mislabeled as invalid data. Mastermind keeps its code out of the public puzzle object, owns duplicate-aware scoring and stored-feedback validation, and exposes only the feedback needed by the web UI. Sokoban owns movement and push legality; Peg Solitaire owns jump geometry and legal-move discovery. Their React components keep only interaction state such as keyboard handling and selected pegs. Because the game is fully offline/client-side, Mastermind's concealment is an architectural boundary rather than a security guarantee against a user inspecting the shipped JavaScript.
 
 There is still no backend, Rust/WASM layer, Expo app, Tauri shell, generalized solver/generator framework, account system, or achievement layer.
 

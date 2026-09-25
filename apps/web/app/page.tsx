@@ -2,6 +2,8 @@ import { FifteenPuzzleGame } from "../components/FifteenPuzzleGame";
 import { LightsOutGame } from "../components/LightsOutGame";
 import { MastermindGame } from "../components/MastermindGame";
 import { NonogramGame } from "../components/NonogramGame";
+import { PegSolitaireGame } from "../components/PegSolitaireGame";
+import { SokobanGame } from "../components/SokobanGame";
 import { SudokuGame } from "../components/SudokuGame";
 import { TowerOfHanoiGame } from "../components/TowerOfHanoiGame";
 
@@ -12,6 +14,8 @@ const games = [
   { id: "fifteen-puzzle", name: "Fifteen Puzzle", description: "Slide numbered tiles through one empty space until the board is ordered." },
   { id: "nonogram", name: "Nonogram", description: "Use row and column run clues to reveal a hidden pixel picture." },
   { id: "mastermind", name: "Mastermind", description: "Deduce a hidden color code from exact-position and color-only feedback." },
+  { id: "sokoban", name: "Sokoban", description: "Push crates through a warehouse until every crate occupies a goal." },
+  { id: "peg-solitaire", name: "Peg Solitaire", description: "Jump pegs over neighbors until only the center peg remains." },
 ] as const;
 
 export default function HomePage() {
@@ -22,11 +26,11 @@ export default function HomePage() {
           <p className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">Deterministic logic games</p>
           <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Puzzle game core</h1>
           <p className="max-w-3xl text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-            Six playable vertical slices exercise the same small headless contracts while keeping each puzzle&apos;s rules and invariants in its own package.
+            Eight playable vertical slices exercise the same small headless contracts while keeping each puzzle&apos;s rules and invariants in its own package.
           </p>
         </div>
 
-        <nav className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6" aria-label="Games">
+        <nav className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Games">
           {games.map((game) => (
             <a
               key={game.id}
@@ -86,6 +90,22 @@ export default function HomePage() {
           <h2 className="mt-1 text-2xl font-semibold tracking-tight">Mastermind</h2>
         </div>
         <MastermindGame />
+      </section>
+
+      <section id="sokoban" className="scroll-mt-8 space-y-5 border-t border-zinc-200 pt-10 dark:border-zinc-800">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Push puzzle</p>
+          <h2 className="mt-1 text-2xl font-semibold tracking-tight">Sokoban</h2>
+        </div>
+        <SokobanGame />
+      </section>
+
+      <section id="peg-solitaire" className="scroll-mt-8 space-y-5 border-t border-zinc-200 pt-10 dark:border-zinc-800">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Jump puzzle</p>
+          <h2 className="mt-1 text-2xl font-semibold tracking-tight">Peg Solitaire</h2>
+        </div>
+        <PegSolitaireGame />
       </section>
     </main>
   );
