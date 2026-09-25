@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 
+const isGitHubPages = process.env.GITHUB_PAGES === "true";
+
 const nextConfig: NextConfig = {
   output: "export",
+  trailingSlash: true,
+  basePath: isGitHubPages ? "/puzzle-game-core" : "",
   transpilePackages: [
     "@puzzle-game-core/game-core",
     "@puzzle-game-core/game-session",
