@@ -1,34 +1,19 @@
 "use client";
 
-import {
-  applyGameSessionMove,
-  canUndoGameSession,
-  restartGameSession,
-  startGameSession,
-  undoGameSession,
-} from "@puzzle-game-core/game-session";
 import { beginnerLightsOut, lightsOutGame } from "@puzzle-game-core/lights-out";
-import { useState } from "react";
+import { useGameSession } from "../hooks/useGameSession";
 
 export function LightsOutGame() {
-  const [session, setSession] = useState(() => startGameSession(lightsOutGame, beginnerLightsOut));
-  const state = session.state;
+  const { session, state, canUndo, applyMove, undo, restart } = useGameSession(
+    lightsOutGame,
+    beginnerLightsOut,
+  );
 
   const status = lightsOutGame.getStatus(beginnerLightsOut, state);
   const litCount = state.cells.filter(Boolean).length;
 
   function press(index: number) {
-    setSession((current) =>
-      applyGameSessionMove(lightsOutGame, beginnerLightsOut, current, { type: "toggle", index }),
-    );
-  }
-
-  function undo() {
-    setSession((current) => undoGameSession(current));
-  }
-
-  function restart() {
-    setSession(restartGameSession(lightsOutGame, beginnerLightsOut));
+    applyMove({ type: "toggle", index });
   }
 
   return (
@@ -84,7 +69,7 @@ export function LightsOutGame() {
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            disabled={!canUndoGameSession(session)}
+            disabled={!canUndo}
             className="min-h-11 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
             onClick={undo}
           >
