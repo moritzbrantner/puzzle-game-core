@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  applyGameSessionMove,
-  canUndoGameSession,
-  restartGameSession,
-  startGameSession,
-  undoGameSession,
-} from "@puzzle-game-core/game-session";
+import { useGameSession } from "../hooks/useGameSession";
 import {
   beginnerNonogram,
   nonogramGame,
@@ -21,30 +15,26 @@ function clueLabel(clue: readonly number[]): string {
 }
 
 export function NonogramGame() {
-  const [session, setSession] = useState(() => startGameSession(nonogramGame, beginnerNonogram));
+  const { session, state, canUndo, applyMove, undo, restart: restartSession } = useGameSession(
+    nonogramGame,
+    beginnerNonogram,
+  );
   const [mode, setMode] = useState<MarkingMode>("filled");
-  const state = session.state;
   const status = nonogramGame.getStatus(beginnerNonogram, state);
   const requiredFilled = beginnerNonogram.rowClues.flat().reduce((sum, run) => sum + run, 0);
   const filledCount = state.cells.filter((cell) => cell === "filled").length;
 
   function markCell(index: number) {
     const target: NonogramCell = state.cells[index] === mode ? "unknown" : mode;
-    setSession((current) =>
-      applyGameSessionMove(nonogramGame, beginnerNonogram, current, {
-        type: "set-cell",
-        index,
-        value: target,
-      }),
-    );
-  }
-
-  function undo() {
-    setSession((current) => undoGameSession(current));
+    applyMove({
+      type: "set-cell",
+      index,
+      value: target,
+    });
   }
 
   function restart() {
-    setSession(restartGameSession(nonogramGame, beginnerNonogram));
+    restartSession();
     setMode("filled");
   }
 
@@ -167,7 +157,7 @@ export function NonogramGame() {
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            disabled={!canUndoGameSession(session)}
+            disabled={!canUndo}
             className="min-h-11 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
             onClick={undo}
           >
