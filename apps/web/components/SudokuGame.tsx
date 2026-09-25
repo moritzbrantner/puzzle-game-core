@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  applyGameSessionMove,
-  canUndoGameSession,
-  createGameSessionFromState,
-  restartGameSession,
-  startGameSession,
-  undoGameSession,
-} from "@puzzle-game-core/game-session";
+import { useGameSession } from "../hooks/useGameSession";
 import {
   beginnerSudoku,
   getConflictingCells,
@@ -27,12 +20,18 @@ function cellCoordinates(index: number): { row: number; column: number } {
 }
 
 export function SudokuGame() {
-  const [session, setSession] = useState(() => startGameSession(sudokuGame, beginnerSudoku));
+  const {
+    state,
+    canUndo,
+    applyMove,
+    undo,
+    restart: restartSession,
+    adoptValidatedState,
+  } = useGameSession(sudokuGame, beginnerSudoku);
   const [selectedIndex, setSelectedIndex] = useState<number>(2);
   const [persistenceReady, setPersistenceReady] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
 
-  const state = session.state;
   const status = sudokuGame.getStatus(beginnerSudoku, state);
   const conflicts = useMemo(() => getConflictingCells(state), [state]);
 
@@ -43,7 +42,7 @@ export function SudokuGame() {
         const parsed = JSON.parse(raw) as { cells?: unknown };
         const restored = restoreSudokuState(beginnerSudoku, parsed.cells);
         if (restored) {
-          setSession(createGameSessionFromState(restored));
+          adoptValidatedState(restored);
         }
       }
     } catch {
@@ -51,7 +50,7 @@ export function SudokuGame() {
     } finally {
       setPersistenceReady(true);
     }
-  }, []);
+  }, [adoptValidatedState]);
 
   useEffect(() => {
     if (!persistenceReady) {
@@ -62,21 +61,15 @@ export function SudokuGame() {
   }, [persistenceReady, state]);
 
   function commit(value: SudokuCell) {
-    setSession((current) =>
-      applyGameSessionMove(sudokuGame, beginnerSudoku, current, {
-        type: "set-cell",
-        index: selectedIndex,
-        value,
-      }),
-    );
-  }
-
-  function undo() {
-    setSession((current) => undoGameSession(current));
+    applyMove({
+      type: "set-cell",
+      index: selectedIndex,
+      value,
+    });
   }
 
   function restart() {
-    setSession(restartGameSession(sudokuGame, beginnerSudoku));
+    restartSession();
     setSelectedIndex(2);
     boardRef.current?.focus();
   }
@@ -205,7 +198,7 @@ export function SudokuGame() {
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            disabled={!canUndoGameSession(session)}
+            disabled={!canUndo}
             className="min-h-11 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
             onClick={undo}
           >

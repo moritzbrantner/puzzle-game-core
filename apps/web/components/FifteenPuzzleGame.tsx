@@ -1,22 +1,18 @@
 "use client";
 
-import {
-  applyGameSessionMove,
-  canUndoGameSession,
-  restartGameSession,
-  startGameSession,
-  undoGameSession,
-} from "@puzzle-game-core/game-session";
+import { useGameSession } from "../hooks/useGameSession";
 import {
   beginnerFifteenPuzzle,
   getMovableSlidingPuzzleTiles,
   slidingPuzzleGame,
 } from "@puzzle-game-core/sliding-puzzle";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 
 export function FifteenPuzzleGame() {
-  const [session, setSession] = useState(() => startGameSession(slidingPuzzleGame, beginnerFifteenPuzzle));
-  const state = session.state;
+  const { session, state, canUndo, applyMove, undo, restart } = useGameSession(
+    slidingPuzzleGame,
+    beginnerFifteenPuzzle,
+  );
   const status = slidingPuzzleGame.getStatus(beginnerFifteenPuzzle, state);
   const movableTiles = useMemo(
     () => new Set(getMovableSlidingPuzzleTiles(beginnerFifteenPuzzle, state)),
@@ -24,17 +20,7 @@ export function FifteenPuzzleGame() {
   );
 
   function slide(tile: number) {
-    setSession((current) =>
-      applyGameSessionMove(slidingPuzzleGame, beginnerFifteenPuzzle, current, { type: "slide", tile }),
-    );
-  }
-
-  function undo() {
-    setSession((current) => undoGameSession(current));
-  }
-
-  function restart() {
-    setSession(restartGameSession(slidingPuzzleGame, beginnerFifteenPuzzle));
+    applyMove({ type: "slide", tile });
   }
 
   return (
@@ -99,7 +85,7 @@ export function FifteenPuzzleGame() {
         <div className="flex flex-wrap gap-2">
           <button
             type="button"
-            disabled={!canUndoGameSession(session)}
+            disabled={!canUndo}
             className="min-h-11 rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-40 dark:bg-zinc-100 dark:text-zinc-900"
             onClick={undo}
           >

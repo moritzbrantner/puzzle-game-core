@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  applyGameSessionMove,
-  canUndoGameSession,
-  restartGameSession,
-  startGameSession,
-  undoGameSession,
-} from "@puzzle-game-core/game-session";
+import { useGameSession } from "../hooks/useGameSession";
 import {
   beginnerMastermind,
   mastermindGame,
@@ -28,7 +22,10 @@ function PegDot({ peg }: Readonly<{ peg: MastermindPeg }>) {
 }
 
 export function MastermindGame() {
-  const [session, setSession] = useState(() => startGameSession(mastermindGame, beginnerMastermind));
+  const { session, canUndo, applyMove, undo, restart: restartSession } = useGameSession(
+    mastermindGame,
+    beginnerMastermind,
+  );
   const [draft, setDraft] = useState<MastermindPeg[]>(() =>
     Array.from({ length: beginnerMastermind.slots }, () => beginnerMastermind.palette[0]),
   );
@@ -46,20 +43,14 @@ export function MastermindGame() {
   }
 
   function submitGuess() {
-    setSession((current) =>
-      applyGameSessionMove(mastermindGame, beginnerMastermind, current, {
-        type: "submit-guess",
-        code: draft,
-      }),
-    );
-  }
-
-  function undo() {
-    setSession((current) => undoGameSession(current));
+    applyMove({
+      type: "submit-guess",
+      code: draft,
+    });
   }
 
   function restart() {
-    setSession(restartGameSession(mastermindGame, beginnerMastermind));
+    restartSession();
     setDraft(Array.from({ length: beginnerMastermind.slots }, () => beginnerMastermind.palette[0]));
     setActiveSlot(0);
   }
@@ -118,7 +109,7 @@ export function MastermindGame() {
             </button>
             <button
               type="button"
-              disabled={!canUndoGameSession(session)}
+              disabled={!canUndo}
               className="min-h-11 rounded-lg border border-zinc-300 px-4 py-2 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-40 dark:border-zinc-700"
               onClick={undo}
             >
