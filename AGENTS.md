@@ -16,6 +16,8 @@ This repository is a reusable foundation for small deterministic logic games and
 - Mastermind secret ownership, duplicate-aware feedback, guess-history validation, and solved-state truth belong in `packages/mastermind`; React may render domain feedback but must not read or reproduce the secret/scoring rules. Client-side concealment is not a security boundary.
 - External/restored state must be validated by the owning game package before it is adopted by a fresh game session.
 - Platform concerns such as browser persistence, navigation, input adaptation, animation, and rendering stay in application/UI layers until there is evidence they should be shared.
+- React integration for generic session actions belongs in the web application (currently `apps/web/hooks/useGameSession.ts`), never in `packages/game-session`. A component may call the pure session functions directly when it needs transition identity to coordinate UI state.
+- Keep the dependency direction one-way: `game-core` is the minimal base, domain game packages and `game-session` depend on it, domain games do not depend on `game-session`, and platform apps consume those headless packages.
 - Prefer a simple TypeScript implementation first. Rust/WASM is an optional optimization boundary for expensive generation, solving, or batch work, not a mandatory runtime dependency.
 - Preserve offline play. A backend must never be required for the core puzzle loop.
 - Keep deterministic fixtures and seeds reproducible so bugs can be replayed.
