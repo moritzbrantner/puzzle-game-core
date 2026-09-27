@@ -2,9 +2,9 @@
 
 import { useGameSession } from "../hooks/useGameSession";
 import {
-  beginnerNonogram,
   nonogramGame,
   type NonogramCell,
+  type NonogramPuzzle,
 } from "@puzzle-game-core/nonogram";
 import { Fragment, useState } from "react";
 
@@ -14,14 +14,14 @@ function clueLabel(clue: readonly number[]): string {
   return clue.length === 0 ? "0" : clue.join(" ");
 }
 
-export function NonogramGame() {
+export function NonogramGame({ puzzle }: Readonly<{ puzzle: NonogramPuzzle }>) {
   const { session, state, canUndo, applyMove, undo, restart: restartSession } = useGameSession(
     nonogramGame,
-    beginnerNonogram,
+    puzzle,
   );
   const [mode, setMode] = useState<MarkingMode>("filled");
-  const status = nonogramGame.getStatus(beginnerNonogram, state);
-  const requiredFilled = beginnerNonogram.rowClues.flat().reduce((sum, run) => sum + run, 0);
+  const status = nonogramGame.getStatus(puzzle, state);
+  const requiredFilled = puzzle.rowClues.flat().reduce((sum, run) => sum + run, 0);
   const filledCount = state.cells.filter((cell) => cell === "filled").length;
 
   function markCell(index: number) {
@@ -46,11 +46,11 @@ export function NonogramGame() {
           role="grid"
           aria-label="Nonogram board"
           style={{
-            gridTemplateColumns: `minmax(3.5rem, auto) repeat(${beginnerNonogram.width}, minmax(2.75rem, 1fr))`,
+            gridTemplateColumns: `minmax(3.5rem, auto) repeat(${puzzle.width}, minmax(2.75rem, 1fr))`,
           }}
         >
           <div aria-hidden="true" />
-          {beginnerNonogram.columnClues.map((clue, column) => (
+          {puzzle.columnClues.map((clue, column) => (
             <div
               key={`column-${column}`}
               className="flex min-h-16 items-end justify-center pb-2 text-center text-xs font-semibold text-zinc-600 dark:text-zinc-400"
@@ -60,17 +60,17 @@ export function NonogramGame() {
             </div>
           ))}
 
-          {Array.from({ length: beginnerNonogram.height }, (_, row) => (
+          {Array.from({ length: puzzle.height }, (_, row) => (
             <Fragment key={`row-${row}`}>
               <div
                 className="flex min-h-11 items-center justify-end pr-2 text-sm font-semibold text-zinc-600 dark:text-zinc-400"
-                aria-label={`Row ${row + 1} clue: ${clueLabel(beginnerNonogram.rowClues[row])}`}
+                aria-label={`Row ${row + 1} clue: ${clueLabel(puzzle.rowClues[row])}`}
               >
-                {clueLabel(beginnerNonogram.rowClues[row])}
+                {clueLabel(puzzle.rowClues[row])}
               </div>
 
-              {Array.from({ length: beginnerNonogram.width }, (_, column) => {
-                const index = row * beginnerNonogram.width + column;
+              {Array.from({ length: puzzle.width }, (_, column) => {
+                const index = row * puzzle.width + column;
                 const cell = state.cells[index];
                 const marked = cell !== "unknown";
 
