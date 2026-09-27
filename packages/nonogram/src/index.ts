@@ -166,3 +166,57 @@ export const beginnerNonogram = createNonogramPuzzle(
     false, true, false, true, false,
   ],
 );
+
+
+function nonogramSolutionFromRows(rows: readonly string[]): readonly boolean[] {
+  if (rows.length === 0 || rows.some((row) => row.length !== rows[0].length)) {
+    throw new Error("Nonogram fixture rows must form a non-empty rectangle.");
+  }
+
+  return rows.flatMap((row) =>
+    [...row].map((cell) => {
+      if (cell === "#") return true;
+      if (cell === ".") return false;
+      throw new Error(`Unsupported Nonogram fixture cell: ${cell}`);
+    }),
+  );
+}
+
+export const intermediateNonogram = createNonogramPuzzle(
+  "diamond-seven",
+  7,
+  7,
+  nonogramSolutionFromRows([
+    "...#...",
+    "..###..",
+    ".#####.",
+    "#######",
+    ".#####.",
+    "..###..",
+    "...#...",
+  ]),
+);
+
+export const advancedNonogram = createNonogramPuzzle(
+  "heart-ten",
+  10,
+  10,
+  nonogramSolutionFromRows([
+    ".##....##.",
+    "####..####",
+    "##########",
+    "##########",
+    ".########.",
+    "..######..",
+    "...####...",
+    "....##....",
+    "....##....",
+    "..........",
+  ]),
+);
+
+export const nonogramLevels = [
+  beginnerNonogram,
+  intermediateNonogram,
+  advancedNonogram,
+] as const;

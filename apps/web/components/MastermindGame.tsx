@@ -2,9 +2,9 @@
 
 import { useGameSession } from "../hooks/useGameSession";
 import {
-  beginnerMastermind,
   mastermindGame,
   type MastermindPeg,
+  type MastermindPuzzle,
 } from "@puzzle-game-core/mastermind";
 import { useState } from "react";
 
@@ -21,17 +21,17 @@ function PegDot({ peg }: Readonly<{ peg: MastermindPeg }>) {
   return <span className={`inline-block size-3 rounded-full ${pegClasses[peg]}`} aria-hidden="true" />;
 }
 
-export function MastermindGame() {
+export function MastermindGame({ puzzle }: Readonly<{ puzzle: MastermindPuzzle }>) {
   const { session, canUndo, applyMove, undo, restart: restartSession } = useGameSession(
     mastermindGame,
-    beginnerMastermind,
+    puzzle,
   );
   const [draft, setDraft] = useState<MastermindPeg[]>(() =>
-    Array.from({ length: beginnerMastermind.slots }, () => beginnerMastermind.palette[0]),
+    Array.from({ length: puzzle.slots }, () => puzzle.palette[0]),
   );
   const [activeSlot, setActiveSlot] = useState(0);
 
-  const status = mastermindGame.getStatus(beginnerMastermind, session.state);
+  const status = mastermindGame.getStatus(puzzle, session.state);
 
   function choosePeg(peg: MastermindPeg) {
     setDraft((current) => {
@@ -39,7 +39,7 @@ export function MastermindGame() {
       next[activeSlot] = peg;
       return next;
     });
-    setActiveSlot((current) => (current + 1) % beginnerMastermind.slots);
+    setActiveSlot((current) => (current + 1) % puzzle.slots);
   }
 
   function submitGuess() {
@@ -51,7 +51,7 @@ export function MastermindGame() {
 
   function restart() {
     restartSession();
-    setDraft(Array.from({ length: beginnerMastermind.slots }, () => beginnerMastermind.palette[0]));
+    setDraft(Array.from({ length: puzzle.slots }, () => puzzle.palette[0]));
     setActiveSlot(0);
   }
 
@@ -60,7 +60,7 @@ export function MastermindGame() {
       <div className="min-w-0 space-y-5">
         <div className="rounded-xl border border-zinc-200 p-4 dark:border-zinc-800">
           <p className="text-sm leading-6 text-zinc-600 dark:text-zinc-400">
-            Build a {beginnerMastermind.slots}-peg guess. Feedback reports exact positions and correct colors in the wrong position. Repeated colors are counted only once.
+            Build a {puzzle.slots}-peg guess. Feedback reports exact positions and correct colors in the wrong position. Repeated colors are counted only once.
           </p>
 
           <div className="mt-4 flex flex-wrap gap-2" aria-label="Current guess">
@@ -85,7 +85,7 @@ export function MastermindGame() {
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2" aria-label="Peg palette">
-            {beginnerMastermind.palette.map((peg) => (
+            {puzzle.palette.map((peg) => (
               <button
                 key={peg}
                 type="button"

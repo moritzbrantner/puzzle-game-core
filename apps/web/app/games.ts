@@ -45,7 +45,7 @@ export const games = [
     id: "peg-solitaire",
     name: "Peg Solitaire",
     category: "Jump puzzle",
-    description: "Jump pegs over neighbors until only the center peg remains.",
+    description: "Jump pegs over neighbors until only the goal peg remains.",
   },
 ] as const;
 

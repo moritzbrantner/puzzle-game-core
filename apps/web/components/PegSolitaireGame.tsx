@@ -1,14 +1,14 @@
 "use client";
 
 import {
-  beginnerPegSolitaire,
   getPegSolitaireLegalMoves,
   pegSolitaireGame,
+  type PegSolitairePuzzle,
 } from "@puzzle-game-core/peg-solitaire";
 import { useMemo, useState } from "react";
 import { useGameSession } from "../hooks/useGameSession";
 
-export function PegSolitaireGame() {
+export function PegSolitaireGame({ puzzle }: Readonly<{ puzzle: PegSolitairePuzzle }>) {
   const {
     session,
     state,
@@ -16,14 +16,14 @@ export function PegSolitaireGame() {
     applyMove,
     undo: undoSession,
     restart: restartSession,
-  } = useGameSession(pegSolitaireGame, beginnerPegSolitaire);
+  } = useGameSession(pegSolitaireGame, puzzle);
   const [selected, setSelected] = useState<number | null>(null);
 
-  const holes = useMemo(() => new Set(beginnerPegSolitaire.holes), []);
+  const holes = useMemo(() => new Set(puzzle.holes), [puzzle]);
   const pegs = useMemo(() => new Set(state.pegs), [state.pegs]);
   const legalMoves = useMemo(
-    () => getPegSolitaireLegalMoves(beginnerPegSolitaire, state),
-    [state],
+    () => getPegSolitaireLegalMoves(puzzle, state),
+    [puzzle, state],
   );
   const legalTargets = useMemo(
     () =>
@@ -34,7 +34,7 @@ export function PegSolitaireGame() {
       ),
     [legalMoves, selected],
   );
-  const status = pegSolitaireGame.getStatus(beginnerPegSolitaire, state);
+  const status = pegSolitaireGame.getStatus(puzzle, state);
 
   function selectHole(index: number) {
     if (pegs.has(index)) {
@@ -63,12 +63,13 @@ export function PegSolitaireGame() {
   return (
     <section className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,34rem)_minmax(14rem,1fr)] lg:items-start">
       <div
-        className="grid aspect-square w-full max-w-[34rem] grid-cols-7 gap-1 rounded-xl border border-zinc-200 bg-zinc-100 p-3 dark:border-zinc-800 dark:bg-zinc-900"
+        className="grid aspect-square w-full max-w-[34rem] gap-1 rounded-xl border border-zinc-200 bg-zinc-100 p-3 dark:border-zinc-800 dark:bg-zinc-900"
+        style={{ gridTemplateColumns: `repeat(${puzzle.width}, minmax(0, 1fr))` }}
         role="grid"
         aria-label="Peg Solitaire board"
       >
         {Array.from(
-          { length: beginnerPegSolitaire.width * beginnerPegSolitaire.height },
+          { length: puzzle.width * puzzle.height },
           (_, index) => {
             if (!holes.has(index)) {
               return <div key={index} aria-hidden="true" />;
@@ -77,9 +78,9 @@ export function PegSolitaireGame() {
             const occupied = pegs.has(index);
             const isSelected = selected === index;
             const legalTarget = legalTargets.has(index);
-            const isGoal = beginnerPegSolitaire.goalIndex === index;
-            const row = Math.floor(index / beginnerPegSolitaire.width);
-            const column = index % beginnerPegSolitaire.width;
+            const isGoal = puzzle.goalIndex === index;
+            const row = Math.floor(index / puzzle.width);
+            const column = index % puzzle.width;
 
             return (
               <button
@@ -87,7 +88,7 @@ export function PegSolitaireGame() {
                 type="button"
                 role="gridcell"
                 aria-pressed={isSelected}
-                aria-label={`Row ${row + 1}, column ${column + 1}, ${occupied ? "peg" : "empty"}${isGoal ? ", center goal" : ""}${legalTarget ? ", legal destination" : ""}`}
+                aria-label={`Row ${row + 1}, column ${column + 1}, ${occupied ? "peg" : "empty"}${isGoal ? ", goal" : ""}${legalTarget ? ", legal destination" : ""}`}
                 className={[
                   "relative flex aspect-square min-h-11 items-center justify-center rounded-full border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500",
                   legalTarget
@@ -121,7 +122,7 @@ export function PegSolitaireGame() {
           <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Status</p>
           <p className="mt-1 text-lg font-semibold" aria-live="polite">
             {status === "solved"
-              ? "Center peg solved"
+              ? "Goal peg solved"
               : legalMoves.length === 0
                 ? "No legal jumps"
                 : selected === null

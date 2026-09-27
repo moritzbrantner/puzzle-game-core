@@ -260,3 +260,28 @@ export const beginnerPegSolitaire = createPegSolitairePuzzle({
   initialPegs: englishBoardHoles.filter((index) => index !== englishBoardCenter),
   goalIndex: englishBoardCenter,
 });
+
+
+export const trainingPegSolitaire = createPegSolitairePuzzle({
+  id: "training-one-jump",
+  width: 3,
+  height: 3,
+  holes: [3, 4, 5],
+  initialPegs: [3, 4],
+  goalIndex: 5,
+});
+
+export const intermediatePegSolitaire = createPegSolitairePuzzle({
+  id: "training-two-jumps",
+  width: 5,
+  height: 3,
+  holes: [5, 6, 7, 8, 9],
+  initialPegs: [5, 6, 8],
+  goalIndex: 9,
+});
+
+export const pegSolitaireLevels = [
+  trainingPegSolitaire,
+  intermediatePegSolitaire,
+  beginnerPegSolitaire,
+] as const;

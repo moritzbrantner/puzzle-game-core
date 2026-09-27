@@ -263,3 +263,30 @@ export const beginnerSokoban = puzzleFromRows("warehouse-two-crates", [
   "#     #",
   "#######",
 ]);
+
+
+export const intermediateSokoban = puzzleFromRows("warehouse-offset-goals", [
+  "########",
+  "#      #",
+  "# .  . #",
+  "# $$   #",
+  "#   @  #",
+  "#      #",
+  "########",
+]);
+
+export const advancedSokoban = puzzleFromRows("warehouse-three-crates", [
+  "########",
+  "#  .   #",
+  "#  . . #",
+  "# $$$  #",
+  "#   @  #",
+  "#      #",
+  "########",
+]);
+
+export const sokobanLevels = [
+  beginnerSokoban,
+  intermediateSokoban,
+  advancedSokoban,
+] as const;

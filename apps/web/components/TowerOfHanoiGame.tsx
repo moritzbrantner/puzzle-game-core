@@ -8,19 +8,19 @@ import {
   undoGameSession,
 } from "@puzzle-game-core/game-session";
 import {
-  beginnerHanoi,
   getMinimumHanoiMoveCount,
   towerOfHanoiGame,
+  type HanoiPuzzle,
 } from "@puzzle-game-core/tower-of-hanoi";
 import { useState } from "react";
 
-export function TowerOfHanoiGame() {
-  const [session, setSession] = useState(() => startGameSession(towerOfHanoiGame, beginnerHanoi));
+export function TowerOfHanoiGame({ puzzle }: Readonly<{ puzzle: HanoiPuzzle }>) {
+  const [session, setSession] = useState(() => startGameSession(towerOfHanoiGame, puzzle));
   const [selectedPeg, setSelectedPeg] = useState<number | null>(null);
   const state = session.state;
 
-  const status = towerOfHanoiGame.getStatus(beginnerHanoi, state);
-  const minimumMoves = getMinimumHanoiMoveCount(beginnerHanoi);
+  const status = towerOfHanoiGame.getStatus(puzzle, state);
+  const minimumMoves = getMinimumHanoiMoveCount(puzzle);
 
   function selectPeg(pegIndex: number) {
     if (selectedPeg === null) {
@@ -35,7 +35,7 @@ export function TowerOfHanoiGame() {
       return;
     }
 
-    const next = applyGameSessionMove(towerOfHanoiGame, beginnerHanoi, session, {
+    const next = applyGameSessionMove(towerOfHanoiGame, puzzle, session, {
       type: "move",
       from: selectedPeg,
       to: pegIndex,
@@ -53,7 +53,7 @@ export function TowerOfHanoiGame() {
   }
 
   function restart() {
-    setSession(restartGameSession(towerOfHanoiGame, beginnerHanoi));
+    setSession(restartGameSession(towerOfHanoiGame, puzzle));
     setSelectedPeg(null);
   }
 
@@ -85,7 +85,7 @@ export function TowerOfHanoiGame() {
                     <div
                       key={disk}
                       className="flex h-8 items-center justify-center rounded-md border border-zinc-700 bg-zinc-800 text-xs font-bold text-white shadow-sm dark:border-zinc-300 dark:bg-zinc-200 dark:text-zinc-950 sm:h-9"
-                      style={{ width: `${36 + (disk / beginnerHanoi.diskCount) * 56}%` }}
+                      style={{ width: `${36 + (disk / puzzle.diskCount) * 56}%` }}
                     >
                       {disk}
                     </div>

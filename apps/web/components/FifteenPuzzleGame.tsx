@@ -2,21 +2,21 @@
 
 import { useGameSession } from "../hooks/useGameSession";
 import {
-  beginnerFifteenPuzzle,
+  type SlidingPuzzle,
   getMovableSlidingPuzzleTiles,
   slidingPuzzleGame,
 } from "@puzzle-game-core/sliding-puzzle";
 import { useMemo } from "react";
 
-export function FifteenPuzzleGame() {
+export function FifteenPuzzleGame({ puzzle }: Readonly<{ puzzle: SlidingPuzzle }>) {
   const { session, state, canUndo, applyMove, undo, restart } = useGameSession(
     slidingPuzzleGame,
-    beginnerFifteenPuzzle,
+    puzzle,
   );
-  const status = slidingPuzzleGame.getStatus(beginnerFifteenPuzzle, state);
+  const status = slidingPuzzleGame.getStatus(puzzle, state);
   const movableTiles = useMemo(
-    () => new Set(getMovableSlidingPuzzleTiles(beginnerFifteenPuzzle, state)),
-    [state],
+    () => new Set(getMovableSlidingPuzzleTiles(puzzle, state)),
+    [puzzle, state],
   );
 
   function slide(tile: number) {

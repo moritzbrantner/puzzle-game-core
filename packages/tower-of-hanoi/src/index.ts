@@ -127,3 +127,13 @@ export const towerOfHanoiGame: GameDefinition<HanoiPuzzle, HanoiState, HanoiMove
 };
 
 export const beginnerHanoi = createHanoiPuzzle("three-disks", 3);
+
+
+export const intermediateHanoi = createHanoiPuzzle("four-disks", 4);
+export const advancedHanoi = createHanoiPuzzle("five-disks", 5);
+
+export const hanoiLevels = [
+  beginnerHanoi,
+  intermediateHanoi,
+  advancedHanoi,
+] as const;

@@ -1,27 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { ComponentType } from "react";
-import { FifteenPuzzleGame } from "../../components/FifteenPuzzleGame";
-import { LightsOutGame } from "../../components/LightsOutGame";
-import { MastermindGame } from "../../components/MastermindGame";
-import { NonogramGame } from "../../components/NonogramGame";
-import { PegSolitaireGame } from "../../components/PegSolitaireGame";
-import { SokobanGame } from "../../components/SokobanGame";
-import { SudokuGame } from "../../components/SudokuGame";
-import { TowerOfHanoiGame } from "../../components/TowerOfHanoiGame";
-import { games, getGame, type GameId } from "../games";
-
-const gameComponents: Record<GameId, ComponentType> = {
-  sudoku: SudokuGame,
-  "lights-out": LightsOutGame,
-  "tower-of-hanoi": TowerOfHanoiGame,
-  "fifteen-puzzle": FifteenPuzzleGame,
-  nonogram: NonogramGame,
-  mastermind: MastermindGame,
-  sokoban: SokobanGame,
-  "peg-solitaire": PegSolitaireGame,
-};
+import { Suspense } from "react";
+import { GameLevels } from "../../components/GameLevels";
+import { games, getGame } from "../games";
 
 export const dynamicParams = false;
 
@@ -59,8 +41,6 @@ export default async function GamePage({
     notFound();
   }
 
-  const Game = gameComponents[game.id];
-
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-4xl flex-col gap-8 px-4 py-8 sm:px-8 sm:py-12">
       <header className="space-y-4">
@@ -80,7 +60,9 @@ export default async function GamePage({
         </div>
       </header>
 
-      <Game />
+      <Suspense fallback={<p className="text-sm text-zinc-500">Loading puzzle…</p>}>
+        <GameLevels gameId={game.id} />
+      </Suspense>
     </main>
   );
 }

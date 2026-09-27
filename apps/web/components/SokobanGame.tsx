@@ -1,9 +1,9 @@
 "use client";
 
 import {
-  beginnerSokoban,
   sokobanGame,
   type SokobanDirection,
+  type SokobanPuzzle,
 } from "@puzzle-game-core/sokoban";
 import { useMemo, type KeyboardEvent } from "react";
 import { useGameSession } from "../hooks/useGameSession";
@@ -15,15 +15,15 @@ const keyDirections: Partial<Record<string, SokobanDirection>> = {
   ArrowRight: "right",
 };
 
-export function SokobanGame() {
+export function SokobanGame({ puzzle }: Readonly<{ puzzle: SokobanPuzzle }>) {
   const { session, state, canUndo, applyMove, undo, restart } = useGameSession(
     sokobanGame,
-    beginnerSokoban,
+    puzzle,
   );
-  const walls = useMemo(() => new Set(beginnerSokoban.walls), []);
-  const goals = useMemo(() => new Set(beginnerSokoban.goals), []);
+  const walls = useMemo(() => new Set(puzzle.walls), [puzzle]);
+  const goals = useMemo(() => new Set(puzzle.goals), [puzzle]);
   const crates = useMemo(() => new Set(state.crates), [state.crates]);
-  const status = sokobanGame.getStatus(beginnerSokoban, state);
+  const status = sokobanGame.getStatus(puzzle, state);
 
   function move(direction: SokobanDirection) {
     applyMove({ type: "move", direction });
@@ -49,18 +49,18 @@ export function SokobanGame() {
           tabIndex={0}
           onKeyDown={handleKeyDown}
           style={{
-            gridTemplateColumns: `repeat(${beginnerSokoban.width}, minmax(0, 1fr))`,
+            gridTemplateColumns: `repeat(${puzzle.width}, minmax(0, 1fr))`,
           }}
         >
           {Array.from(
-            { length: beginnerSokoban.width * beginnerSokoban.height },
+            { length: puzzle.width * puzzle.height },
             (_, index) => {
               const wall = walls.has(index);
               const goal = goals.has(index);
               const crate = crates.has(index);
               const player = state.player === index;
-              const row = Math.floor(index / beginnerSokoban.width);
-              const column = index % beginnerSokoban.width;
+              const row = Math.floor(index / puzzle.width);
+              const column = index % puzzle.width;
 
               if (wall) {
                 return (
