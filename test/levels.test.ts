@@ -123,6 +123,16 @@ describe("puzzle level catalogs", () => {
     }
   });
 
+  test("advanced Lights Out is no longer solved by the previous seven-press shortcut", () => {
+    let state = createInitialLightsOutState(advancedLightsOut);
+
+    for (const index of [11, 13, 20, 21, 22, 23, 24]) {
+      state = applyLightsOutMove(advancedLightsOut, state, { type: "toggle", index });
+    }
+
+    expect(getLightsOutStatus(advancedLightsOut, state)).toBe("playing");
+  });
+
   test("new Fifteen Puzzle levels retain their recorded solution paths", () => {
     const cases = [
       { puzzle: easyFifteenPuzzle, solution: easyFifteenPuzzleSolution },
