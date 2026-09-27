@@ -14,7 +14,7 @@ The repository grows vertically: each game keeps its rules in a headless package
 - `packages/mastermind`: hidden-code ownership, duplicate-aware exact/color-only feedback, validated guess history, and deterministic solved-state semantics
 - `packages/sokoban`: deterministic warehouse movement, crate-push legality, state validation, and a reproducible two-crate fixture
 - `packages/peg-solitaire`: classic English-board jump legality, legal-move discovery, state validation, and center-goal completion semantics
-- `apps/web`: a small gallery hosting all eight games with focused browser interactions
+- `apps/web`: a small gallery hosting all eight games with three URL-selectable deterministic levels each
 
 ## Shared foundations
 
@@ -23,7 +23,7 @@ The repository grows vertically: each game keeps its rules in a headless package
 
 ## Architecture
 
-Puzzle rules are deterministic and testable without React. Game packages remain authoritative for legal moves, validation, and status. `game-session` only records accepted state transitions; rejected/no-op moves preserve state identity. Browser persistence validates through the owning game package before restored state enters a fresh session. Rendering, browser input, navigation, persistence transport, and other platform concerns remain in the web app.
+Puzzle rules and level fixtures are deterministic and testable without React. Game packages remain authoritative for legal moves, validation, and status. `game-session` only records accepted state transitions; rejected/no-op moves preserve state identity. Browser persistence validates through the owning game package before restored state enters a fresh session. Rendering, browser input, navigation, persistence transport, and other platform concerns remain in the web app.
 
 The dependency direction is deliberately one-way: `game-core` is the minimal base; domain game packages and `game-session` depend on it; domain games do not depend on `game-session`; and `apps/web` composes the headless packages. React session wiring stays in `apps/web/hooks/useGameSession.ts` instead of leaking into the reusable packages. A lightweight architecture test guards those boundaries as new games are added.
 
