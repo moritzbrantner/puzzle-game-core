@@ -2,24 +2,25 @@
 
 import { useGameSession } from "../hooks/useGameSession";
 import {
-  beginnerSudoku,
   getConflictingCells,
   isGivenCell,
   restoreSudokuState,
   sudokuGame,
   type SudokuCell,
   type SudokuDigit,
+  type SudokuPuzzle,
 } from "@puzzle-game-core/sudoku";
 import { useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 
-const STORAGE_KEY = "puzzle-game-core:sudoku:classic-easy-1:v1";
 const DIGITS: SudokuDigit[] = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 function cellCoordinates(index: number): { row: number; column: number } {
   return { row: Math.floor(index / 9), column: index % 9 };
 }
 
-export function SudokuGame() {
+export function SudokuGame({ puzzle }: Readonly<{ puzzle: SudokuPuzzle }>) {
+  const firstEditableIndex = Math.max(0, puzzle.givens.findIndex((cell) => cell === null));
+  const storageKey = `puzzle-game-core:sudoku:${puzzle.id}:v1`;
   const {
     state,
     canUndo,
@@ -27,38 +28,38 @@ export function SudokuGame() {
     undo,
     restart: restartSession,
     adoptValidatedState,
-  } = useGameSession(sudokuGame, beginnerSudoku);
-  const [selectedIndex, setSelectedIndex] = useState<number>(2);
+  } = useGameSession(sudokuGame, puzzle);
+  const [selectedIndex, setSelectedIndex] = useState<number>(firstEditableIndex);
   const [persistenceReady, setPersistenceReady] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
 
-  const status = sudokuGame.getStatus(beginnerSudoku, state);
+  const status = sudokuGame.getStatus(puzzle, state);
   const conflicts = useMemo(() => getConflictingCells(state), [state]);
 
   useEffect(() => {
     try {
-      const raw = window.localStorage.getItem(STORAGE_KEY);
+      const raw = window.localStorage.getItem(storageKey);
       if (raw) {
         const parsed = JSON.parse(raw) as { cells?: unknown };
-        const restored = restoreSudokuState(beginnerSudoku, parsed.cells);
+        const restored = restoreSudokuState(puzzle, parsed.cells);
         if (restored) {
           adoptValidatedState(restored);
         }
       }
     } catch {
-      window.localStorage.removeItem(STORAGE_KEY);
+      window.localStorage.removeItem(storageKey);
     } finally {
       setPersistenceReady(true);
     }
-  }, [adoptValidatedState]);
+  }, [adoptValidatedState, puzzle, storageKey]);
 
   useEffect(() => {
     if (!persistenceReady) {
       return;
     }
 
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ cells: state.cells }));
-  }, [persistenceReady, state]);
+    window.localStorage.setItem(storageKey, JSON.stringify({ cells: state.cells }));
+  }, [persistenceReady, state, storageKey]);
 
   function commit(value: SudokuCell) {
     applyMove({
@@ -70,7 +71,7 @@ export function SudokuGame() {
 
   function restart() {
     restartSession();
-    setSelectedIndex(2);
+    setSelectedIndex(firstEditableIndex);
     boardRef.current?.focus();
   }
 
@@ -120,7 +121,7 @@ export function SudokuGame() {
         >
           {state.cells.map((value, index) => {
             const { row, column } = cellCoordinates(index);
-            const given = isGivenCell(beginnerSudoku, index);
+            const given = isGivenCell(puzzle, index);
             const selected = selectedIndex === index;
             const conflict = conflicts.has(index);
             const sameValue = value !== null && state.cells[selectedIndex] === value;
