@@ -7,7 +7,7 @@ import {
   intermediateLightsOut,
   lightsOutGame,
   lightsOutLevels,
-} from "@puzzle-game-core/lights-out";
+} from "../packages/lights-out/src/index";
 import {
   advancedMastermind,
   applyMastermindMove,
@@ -16,11 +16,11 @@ import {
   intermediateMastermind,
   mastermindGame,
   mastermindLevels,
-} from "@puzzle-game-core/mastermind";
+} from "../packages/mastermind/src/index";
 import {
   nonogramGame,
   nonogramLevels,
-} from "@puzzle-game-core/nonogram";
+} from "../packages/nonogram/src/index";
 import {
   applyPegSolitaireMove,
   createInitialPegSolitaireState,
@@ -29,7 +29,7 @@ import {
   pegSolitaireGame,
   pegSolitaireLevels,
   trainingPegSolitaire,
-} from "@puzzle-game-core/peg-solitaire";
+} from "../packages/peg-solitaire/src/index";
 import {
   applySlidingPuzzleMove,
   createInitialSlidingPuzzleState,
@@ -40,7 +40,7 @@ import {
   intermediateFifteenPuzzle,
   intermediateFifteenPuzzleSolution,
   slidingPuzzleGame,
-} from "@puzzle-game-core/sliding-puzzle";
+} from "../packages/sliding-puzzle/src/index";
 import {
   advancedSokoban,
   applySokobanMove,
@@ -50,15 +50,15 @@ import {
   sokobanGame,
   sokobanLevels,
   type SokobanDirection,
-} from "@puzzle-game-core/sokoban";
+} from "../packages/sokoban/src/index";
 import {
   sudokuGame,
   sudokuLevels,
-} from "@puzzle-game-core/sudoku";
+} from "../packages/sudoku/src/index";
 import {
   hanoiLevels,
   towerOfHanoiGame,
-} from "@puzzle-game-core/tower-of-hanoi";
+} from "../packages/tower-of-hanoi/src/index";
 
 function expectThreeUniqueLevels(levels: readonly Readonly<{ id: string }>[]): void {
   expect(levels).toHaveLength(3);
