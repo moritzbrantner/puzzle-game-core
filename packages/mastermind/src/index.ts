@@ -220,3 +220,20 @@ export const beginnerMastermind = createMastermindPuzzle(
   "classic-four",
   ["red", "yellow", "blue", "green"],
 );
+
+
+export const intermediateMastermind = createMastermindPuzzle(
+  "five-slot-code",
+  ["purple", "red", "purple", "blue", "green"],
+);
+
+export const advancedMastermind = createMastermindPuzzle(
+  "six-slot-code",
+  ["orange", "blue", "yellow", "orange", "green", "purple"],
+);
+
+export const mastermindLevels = [
+  beginnerMastermind,
+  intermediateMastermind,
+  advancedMastermind,
+] as const;
