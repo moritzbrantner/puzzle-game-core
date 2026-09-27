@@ -124,3 +124,27 @@ export const beginnerLightsOut = createLightsOutPuzzle(
 );
 
 export const beginnerLightsOutSolution: readonly number[] = BEGINNER_SOLUTION;
+
+
+const INTERMEDIATE_SOLUTION = [1, 4, 7, 10, 13, 16, 19, 22] as const;
+const ADVANCED_SOLUTION = [0, 2, 4, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23] as const;
+
+export const intermediateLightsOut = createLightsOutPuzzle(
+  "eight-press-five",
+  5,
+  5,
+  fixtureFromPresses(5, 5, INTERMEDIATE_SOLUTION),
+);
+
+export const advancedLightsOut = createLightsOutPuzzle(
+  "thirteen-press-five",
+  5,
+  5,
+  fixtureFromPresses(5, 5, ADVANCED_SOLUTION),
+);
+
+export const lightsOutLevels = [
+  beginnerLightsOut,
+  intermediateLightsOut,
+  advancedLightsOut,
+] as const;
