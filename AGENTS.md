@@ -10,7 +10,8 @@ This repository is a reusable foundation for small deterministic logic games and
 - Keep `packages/game-core` deliberately small. Add an abstraction only after more than one game demonstrates the same need.
 - `GameDefinition.applyMove` returns the input state object unchanged for rejected or no-op moves; generic session code may rely on that identity without duplicating legality rules.
 - `packages/game-session` owns only the session behavior now proven by multiple games: bounded undo history, accepted-move depth, start, and restart. It must not learn puzzle-specific legality, persistence formats, rendering, input, solving, or generation.
-- Individual game packages own their domain model, legal moves, validation, fixtures, and game-specific algorithms.
+- Individual game packages own their domain model, legal moves, validation, fixtures, level catalogs, and game-specific algorithms.
+- Level selection is a web navigation concern: keep the selected level in URL state, and start a fresh game session when the selected puzzle changes.
 - Sliding-puzzle permutation integrity, solvability parity, adjacency, and movable-tile queries belong in `packages/sliding-puzzle`, not in React.
 - Nonogram clue derivation, mark validation, and completion truth belong in `packages/nonogram`; incorrect guesses are valid player state and must not be treated as malformed state.
 - Mastermind secret ownership, duplicate-aware feedback, guess-history validation, and solved-state truth belong in `packages/mastermind`; React may render domain feedback but must not read or reproduce the secret/scoring rules. Client-side concealment is not a security boundary.
@@ -26,4 +27,4 @@ This repository is a reusable foundation for small deterministic logic games and
 
 ## Current scope
 
-The web gallery currently proves Sudoku, Lights Out, Tower of Hanoi, the Fifteen Puzzle, Nonogram, Mastermind, Sokoban, and Peg Solitaire against the shared headless contracts. Do not add Expo, Tauri, accounts, a backend, a generalized solver/generator framework, achievements, or cross-platform rendering abstractions without a concrete later slice that needs them.
+The web gallery currently proves Sudoku, Lights Out, Tower of Hanoi, the Fifteen Puzzle, Nonogram, Mastermind, Sokoban, and Peg Solitaire with three deterministic levels each against the shared headless contracts. Do not add Expo, Tauri, accounts, a backend, a generalized solver/generator framework, achievements, or cross-platform rendering abstractions without a concrete later slice that needs them.
