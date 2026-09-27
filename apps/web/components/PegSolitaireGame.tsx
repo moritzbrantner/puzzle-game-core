@@ -88,7 +88,7 @@ export function PegSolitaireGame({ puzzle }: Readonly<{ puzzle: PegSolitairePuzz
                 type="button"
                 role="gridcell"
                 aria-pressed={isSelected}
-                aria-label={`Row ${row + 1}, column ${column + 1}, ${occupied ? "peg" : "empty"}${isGoal ? ", center goal" : ""}${legalTarget ? ", legal destination" : ""}`}
+                aria-label={`Row ${row + 1}, column ${column + 1}, ${occupied ? "peg" : "empty"}${isGoal ? ", goal" : ""}${legalTarget ? ", legal destination" : ""}`}
                 className={[
                   "relative flex aspect-square min-h-11 items-center justify-center rounded-full border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500",
                   legalTarget
@@ -122,7 +122,7 @@ export function PegSolitaireGame({ puzzle }: Readonly<{ puzzle: PegSolitairePuzz
           <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Status</p>
           <p className="mt-1 text-lg font-semibold" aria-live="polite">
             {status === "solved"
-              ? "Center peg solved"
+              ? "Goal peg solved"
               : legalMoves.length === 0
                 ? "No legal jumps"
                 : selected === null
