@@ -13,7 +13,7 @@ The repository grows vertically: each game keeps its rules in a headless package
 - `packages/nonogram`: clue derivation, tri-state player marks, structural validation, and deterministic completion semantics over a reproducible 5×5 picture fixture
 - `packages/mastermind`: hidden-code ownership, duplicate-aware exact/color-only feedback, validated guess history, and deterministic solved-state semantics
 - `packages/sokoban`: deterministic warehouse movement, crate-push legality, state validation, and a reproducible two-crate fixture
-- `packages/peg-solitaire`: classic English-board jump legality, legal-move discovery, state validation, and center-goal completion semantics
+- `packages/peg-solitaire`: classic English-board jump legality, legal-move discovery, state validation, and configured-goal completion semantics
 - `apps/web`: a small gallery hosting all eight games with three URL-selectable deterministic levels each
 
 ## Shared foundations
