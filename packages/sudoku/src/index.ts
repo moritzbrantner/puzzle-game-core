@@ -249,3 +249,38 @@ export const beginnerSudokuSolution: SudokuGrid = [
   2, 8, 7, 4, 1, 9, 6, 3, 5,
   3, 4, 5, 2, 8, 6, 1, 7, 9,
 ];
+
+
+function rearrangeSudokuFixture(
+  grid: SudokuGrid,
+  rowOrder: readonly number[],
+  columnOrder: readonly number[],
+): SudokuGrid {
+  return rowOrder.flatMap((row) =>
+    columnOrder.map((column) => grid[row * SIDE + column] ?? null),
+  );
+}
+
+export const intermediateSudoku = createSudokuPuzzle(
+  "classic-level-2",
+  rearrangeSudokuFixture(
+    fixtureGivens,
+    [3, 4, 5, 6, 7, 8, 0, 1, 2],
+    [6, 7, 8, 0, 1, 2, 3, 4, 5],
+  ),
+);
+
+export const advancedSudoku = createSudokuPuzzle(
+  "classic-level-3",
+  rearrangeSudokuFixture(
+    fixtureGivens,
+    [2, 0, 1, 5, 3, 4, 8, 6, 7],
+    [1, 2, 0, 4, 5, 3, 7, 8, 6],
+  ),
+);
+
+export const sudokuLevels = [
+  beginnerSudoku,
+  intermediateSudoku,
+  advancedSudoku,
+] as const;
