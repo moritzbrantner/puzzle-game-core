@@ -63,7 +63,8 @@ export function PegSolitaireGame({ puzzle }: Readonly<{ puzzle: PegSolitairePuzz
   return (
     <section className="grid min-w-0 gap-6 lg:grid-cols-[minmax(0,34rem)_minmax(14rem,1fr)] lg:items-start">
       <div
-        className="grid aspect-square w-full max-w-[34rem] gap-1 rounded-xl border border-zinc-200 bg-zinc-100 p-3 dark:border-zinc-800 dark:bg-zinc-900"\n        style={{ gridTemplateColumns: `repeat(${puzzle.width}, minmax(0, 1fr))` }}
+        className="grid aspect-square w-full max-w-[34rem] gap-1 rounded-xl border border-zinc-200 bg-zinc-100 p-3 dark:border-zinc-800 dark:bg-zinc-900"
+        style={{ gridTemplateColumns: `repeat(${puzzle.width}, minmax(0, 1fr))` }}
         role="grid"
         aria-label="Peg Solitaire board"
       >
