@@ -203,3 +203,40 @@ export const beginnerFifteenPuzzleSolution = [
   4, 15, 6, 2, 3, 4, 11, 7, 8, 12,
   15, 11, 7, 8, 12, 15, 11, 7, 8, 12,
 ] as const;
+
+
+export const easyFifteenPuzzle = createSlidingPuzzle(
+  "fifteen-six-move-scramble",
+  4,
+  4,
+  [
+    1, 2, 3, 4,
+    5, 6, 11, 7,
+    9, 10, 15, 8,
+    13, 14, 12, null,
+  ],
+);
+
+export const easyFifteenPuzzleSolution = [12, 15, 11, 7, 8, 12] as const;
+
+export const intermediateFifteenPuzzle = createSlidingPuzzle(
+  "fifteen-twelve-move-scramble",
+  4,
+  4,
+  [
+    1, 2, 3, 4,
+    5, 6, 15, 11,
+    9, 10, 12, 7,
+    13, 14, 8, null,
+  ],
+);
+
+export const intermediateFifteenPuzzleSolution = [
+  8, 12, 15, 11, 7, 8, 12, 15, 11, 7, 8, 12,
+] as const;
+
+export const fifteenPuzzleLevels = [
+  easyFifteenPuzzle,
+  intermediateFifteenPuzzle,
+  beginnerFifteenPuzzle,
+] as const;
