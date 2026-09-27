@@ -1,15 +1,15 @@
 "use client";
 
-import { beginnerLightsOut, lightsOutGame } from "@puzzle-game-core/lights-out";
+import { lightsOutGame, type LightsOutPuzzle } from "@puzzle-game-core/lights-out";
 import { useGameSession } from "../hooks/useGameSession";
 
-export function LightsOutGame() {
+export function LightsOutGame({ puzzle }: Readonly<{ puzzle: LightsOutPuzzle }>) {
   const { session, state, canUndo, applyMove, undo, restart } = useGameSession(
     lightsOutGame,
-    beginnerLightsOut,
+    puzzle,
   );
 
-  const status = lightsOutGame.getStatus(beginnerLightsOut, state);
+  const status = lightsOutGame.getStatus(puzzle, state);
   const litCount = state.cells.filter(Boolean).length;
 
   function press(index: number) {
@@ -23,11 +23,11 @@ export function LightsOutGame() {
           className="grid aspect-square w-full max-w-[34rem] gap-2 rounded-xl border border-zinc-200 bg-zinc-100 p-3 dark:border-zinc-800 dark:bg-zinc-900"
           role="grid"
           aria-label="Lights Out board"
-          style={{ gridTemplateColumns: `repeat(${beginnerLightsOut.width}, minmax(0, 1fr))` }}
+          style={{ gridTemplateColumns: `repeat(${puzzle.width}, minmax(0, 1fr))` }}
         >
           {state.cells.map((lit, index) => {
-            const row = Math.floor(index / beginnerLightsOut.width);
-            const column = index % beginnerLightsOut.width;
+            const row = Math.floor(index / puzzle.width);
+            const column = index % puzzle.width;
 
             return (
               <button
