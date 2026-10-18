@@ -61,7 +61,7 @@ jobs:
     uses: ./.github/workflows/pages.yml
 
   merge-ready:
-    name: merge-ready
+    name: ${{ github.event_name == 'pull_request' && 'merge-ready' || 'validation-summary' }}
     if: ${{ always() }}
     needs: ["verify", "validate-pages", "validation-scope"]
     runs-on: ubuntu-latest
