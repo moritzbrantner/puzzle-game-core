@@ -1,13 +1,7 @@
 name: Pages
 
 on:
-  pull_request:
-    paths:
-      - "apps/web/**"
-      - "packages/**"
-      - "package.json"
-      - "tsconfig.base.json"
-      - ".github/workflows/pages.yml"
+  workflow_call:
   push:
     branches: [main]
     paths:
