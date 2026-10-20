@@ -10,7 +10,7 @@
     "@puzzle-game-core/game-core": "workspace:*"
   },
   "devDependencies": {
-    "@types/bun": "1.4.0"
+    "@types/bun": "1.4.3"
   },
   "scripts": {
     "typecheck": "tsc -p tsconfig.json"
