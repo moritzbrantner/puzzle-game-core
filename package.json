@@ -1,7 +1,6 @@
 {
   "name": "puzzle-game-core",
   "private": true,
-  "packageManager": "bun@1.4.5",
   "workspaces": [
     "apps/*",
     "packages/*"
